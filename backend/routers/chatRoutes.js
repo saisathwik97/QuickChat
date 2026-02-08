@@ -1,0 +1,12 @@
+const express=require("express");
+const router=express.Router();
+const {protect}=require("../middleware/authMiddleware");
+router.post("/",protect,require("../controllers/chatController").accessChat);
+router.get("/",protect,require("../controllers/chatController").fetchChats);
+router.post("/group",protect,require("../controllers/chatController").createGroupChat);
+router.put("/rename",protect,require("../controllers/chatController").renameGroup);
+router.put("/groupadd",protect,require("../controllers/chatController").addToGroup);
+router.put("/groupremove",protect,require("../controllers/chatController").removeFromGroup);
+router.delete("/delete", protect, require("../controllers/chatController").deleteChat);
+router.put("/updateProfilePicture", protect, require("../controllers/chatController").updateProfilePicture);
+module.exports=router;
