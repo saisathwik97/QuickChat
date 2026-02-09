@@ -38,7 +38,8 @@ import { ChatState } from "../component/ContextApi/chatProvider";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 
-const ENDPOINT = "http://localhost:5000";
+
+const ENDPOINT = process.env.Backend_Url;
 var socket, selectedChatCompare;
 
 const Chat = () => {
@@ -127,7 +128,7 @@ const Chat = () => {
       const config = {
         headers: { Authorization: `Bearer ${user.token}` },
       };
-      const { data } = await axios.get("/api/chat", config);
+      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/chat`, config);
       setChats(data);
     } catch (error) {
       toast({
@@ -160,7 +161,7 @@ const Chat = () => {
     try {
       setRenameLoading(true);
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
-      const { data } = await axios.put(`/api/chat/rename`, {
+      const { data } = await axios.put(`${process.env.REACT_APP_API_URL}/api/chat/rename`, {
         chatId: selectedChat._id,
         chatName: groupChatName,
       }, config);
@@ -205,7 +206,7 @@ const Chat = () => {
         headers: { Authorization: `Bearer ${user.token}` },
       };
       const { data } = await axios.put(
-        `/api/chat/groupremove`,
+        `${process.env.REACT_APP_API_URL}/api/chat/groupremove`,
         {
           chatId: selectedChat._id,
           userId: userToRemove._id,
@@ -244,7 +245,7 @@ const Chat = () => {
         },
       };
 
-      await axios.delete(`/api/chat/delete`, {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/chat/delete`, {
         headers: { Authorization: `Bearer ${user.token}` },
         data: { chatId: selectedChat._id }, config
       });
@@ -286,7 +287,7 @@ const Chat = () => {
       setLoadingMessages(true);
 
       const { data } = await axios.get(
-        `/api/message/${selectedChat._id}`,
+        `${process.env.REACT_APP_API_URL}/api/message/${selectedChat._id}`,
         config
       );
 
@@ -322,10 +323,7 @@ const Chat = () => {
       if (!selectedChatCompare || selectedChatCompare._id !== newMessageRecieved.chat._id) {
         if (!notifications.some((n) => n._id === newMessageRecieved._id)) {
           setNotifications((prev) => [newMessageRecieved, ...prev]);
-          // const senderName =
-          //   newMessageRecieved?.sender?.user ||
-          //   newMessageRecieved?.sender?.name ||
-          //   newMessageRecieved?.sender?.email?.split("@")[0];
+          
 
           toast({
             title: "New Message",
@@ -395,7 +393,7 @@ const Chat = () => {
         };
 
         const { data } = await axios.post(
-          "/api/message",
+          `${process.env.REACT_APP_API_URL}/api/message`,
           {
             content: messageToSend,
             chatId: selectedChat._id,
@@ -457,10 +455,10 @@ const Chat = () => {
       const config = {
         headers: { Authorization: `Bearer ${user.token}` },
       };
-      const { data } = await axios.get(`/api/user?search=${query}`, config);
+      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/user?search=${query}`, config);
       setSearchResult(data);
       setLoading(false);
-    } catch {
+    } catch (error) {
       toast({
         title: "Error Occured!",
         description: "Failed to Load the Search Results",
@@ -483,7 +481,7 @@ const Chat = () => {
         },
       };
 
-      const { data } = await axios.post("/api/chat", { userId }, config);
+      const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/chat`, { userId }, config);
 
       setChats((prevChats) => {
         if (!prevChats.find((c) => c._id === data._id)) {
@@ -555,7 +553,7 @@ const Chat = () => {
       return;
     }
     try {
-      const { data } = await axios.get(`/api/user?search=${query}`, {
+      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/user?search=${query}`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       setGroupSearchResult(data);
@@ -580,7 +578,7 @@ const Chat = () => {
       };
 
       const { data } = await axios.post(
-        "/api/chat/group",
+        `${process.env.REACT_APP_API_URL}/api/chat/group`,
         {
           name: groupName,
           users: JSON.stringify(selectedUsers.map((u) => u._id)),
