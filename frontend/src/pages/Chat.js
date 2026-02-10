@@ -39,7 +39,6 @@ import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 
 
-const ENDPOINT = process.env.Backend_Url;
 var socket, selectedChatCompare;
 
 const Chat = () => {
@@ -91,7 +90,7 @@ const Chat = () => {
 
     currentUserIdRef.current = user._id;
 
-    socket = io(ENDPOINT);
+    socket = io();
     socket.emit("setup", user);
     socket.on("connected", () => {
       setSocketConnected(true);
@@ -128,7 +127,7 @@ const Chat = () => {
       const config = {
         headers: { Authorization: `Bearer ${user.token}` },
       };
-      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/chat`, config);
+      const { data } = await axios.get("/api/chat", config);
       setChats(data);
     } catch (error) {
       toast({
@@ -161,7 +160,7 @@ const Chat = () => {
     try {
       setRenameLoading(true);
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
-      const { data } = await axios.put(`${process.env.REACT_APP_API_URL}/api/chat/rename`, {
+      const { data } = await axios.put("/api/chat/rename", {
         chatId: selectedChat._id,
         chatName: groupChatName,
       }, config);
@@ -206,7 +205,7 @@ const Chat = () => {
         headers: { Authorization: `Bearer ${user.token}` },
       };
       const { data } = await axios.put(
-        `${process.env.REACT_APP_API_URL}/api/chat/groupremove`,
+        "/api/chat/groupremove",
         {
           chatId: selectedChat._id,
           userId: userToRemove._id,
@@ -245,7 +244,7 @@ const Chat = () => {
         },
       };
 
-      await axios.delete(`${process.env.REACT_APP_API_URL}/api/chat/delete`, {
+      await axios.delete("/api/chat/delete", {
         headers: { Authorization: `Bearer ${user.token}` },
         data: { chatId: selectedChat._id }, config
       });
@@ -287,7 +286,7 @@ const Chat = () => {
       setLoadingMessages(true);
 
       const { data } = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/message/${selectedChat._id}`,
+        `/api/message/${selectedChat._id}`,
         config
       );
 
@@ -393,7 +392,7 @@ const Chat = () => {
         };
 
         const { data } = await axios.post(
-          `${process.env.REACT_APP_API_URL}/api/message`,
+          "/api/message",
           {
             content: messageToSend,
             chatId: selectedChat._id,
@@ -455,7 +454,7 @@ const Chat = () => {
       const config = {
         headers: { Authorization: `Bearer ${user.token}` },
       };
-      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/user?search=${query}`, config);
+      const { data } = await axios.get(`/api/user?search=${query}`, config);
       setSearchResult(data);
       setLoading(false);
     } catch (error) {
@@ -481,7 +480,7 @@ const Chat = () => {
         },
       };
 
-      const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/chat`, { userId }, config);
+      const { data } = await axios.post("/api/chat", { userId }, config);
 
       setChats((prevChats) => {
         if (!prevChats.find((c) => c._id === data._id)) {
@@ -553,11 +552,20 @@ const Chat = () => {
       return;
     }
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/user?search=${query}`, {
+      const { data } = await axios.get(`/api/user?search=${query}`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       setGroupSearchResult(data);
-    } catch { }
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Load the Search Results",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+    }
   };
 
   const createGroupHandler = async () => {
@@ -578,7 +586,7 @@ const Chat = () => {
       };
 
       const { data } = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/chat/group`,
+        "/api/chat/group",
         {
           name: groupName,
           users: JSON.stringify(selectedUsers.map((u) => u._id)),
