@@ -10,7 +10,7 @@ const chatRoutes = require("./routers/chatRoutes");
 const messageRoutes = require("./routers/messageRoutes");
 const Message = require("./models/messageModel");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
-
+const path = require("path");
 dotenv.config();
 
 const app = express();
@@ -31,13 +31,29 @@ mongoose.connect(MONGO_URI).then(() =>
     process.exit(1);
   });
 
-app.get("/", (req, res) => {
-  res.send("QuickChat Backend Running");
-});
+
 
 app.use("/api/user", routes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/message", messageRoutes);
+//deployment
+const rootDir = path.resolve(__dirname, "..");
+if (process.env.NODE_ENV === "production") {
+ app.use(express.static(path.join(rootDir, "frontend", "build")));
+app.get(/.*/, (req, res) => {
+    res.sendFile(
+      path.join(rootDir, "frontend", "build", "index.html")
+    );
+  });
+
+}
+else {
+ app.get("/", (req, res) => {
+  res.send("QuickChat Backend Running");
+});
+}
+
+//deployment
 
 app.use(notFound);
 app.use(errorHandler);

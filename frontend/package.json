@@ -13,6 +13,7 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.13.4",
+    "build": "^0.1.4",
     "framer-motion": "^12.29.2",
     "history": "^5.3.0",
     "lottie-react": "^2.4.1",
@@ -29,6 +30,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+     
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
