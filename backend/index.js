@@ -19,13 +19,10 @@ const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
 
 app.use(cors({ 
-  origin: ["https://quick-chat-omega-red.vercel.app"],
+  origin: true,
   credentials: true 
 }));
 
-app.get("/", (req, res) => {
-  res.send("QuickChat Backend Running 🚀");
-});
 
 app.use(express.json());
 
@@ -36,27 +33,29 @@ mongoose.connect(MONGO_URI).then(() =>
     process.exit(1);
   });
 
+
+
 app.use("/api/user", routes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/message", messageRoutes);
-// //deployment
-// const rootDir = path.resolve(__dirname, "..");
-// if (process.env.NODE_ENV === "production") {
-//  app.use(express.static(path.join(rootDir, "frontend", "build")));
-// app.get(/.*/, (req, res) => {
-//     res.sendFile(
-//       path.join(rootDir, "frontend", "build", "index.html")
-//     );
-//   });
+//deployment
+const rootDir = path.resolve(__dirname, "..");
+if (process.env.NODE_ENV === "production") {
+ app.use(express.static(path.join(rootDir, "frontend", "build")));
+app.get(/.*/, (req, res) => {
+    res.sendFile(
+      path.join(rootDir, "frontend", "build", "index.html")
+    );
+  });
 
-// }
-// else {
-//  app.get("/", (req, res) => {
-//   res.send("QuickChat Backend Running");
-// });
-// }
+}
+else {
+ app.get("/", (req, res) => {
+  res.send("QuickChat Backend Running");
+});
+}
 
-// //deployment
+//deployment
 
 app.use(notFound);
 app.use(errorHandler);
@@ -64,11 +63,11 @@ app.use(errorHandler);
 const server = http.createServer(app);
 
 const io = new Server(server, {
+  pingTimeout: 60000,
   cors: {
-    origin: ["https://quick-chat-omega-red.vercel.app"],
-    methods: ["GET", "POST"]
+    origin: true,
+    credentials: true,
   },
-  pingTimeout: 60000
 });
 
 io.on("connection", (socket) => {

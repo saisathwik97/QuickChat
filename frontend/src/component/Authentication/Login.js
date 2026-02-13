@@ -12,7 +12,6 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ChatState } from "../ContextApi/chatProvider";
-const BASE_URL = "https://quickchat-production-2f01.up.railway.app";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -45,9 +44,9 @@ function Login() {
           "Content-Type": "application/json",
         },
       };
-   
+
       const { data } = await axios.post(
-        `${BASE_URL}/api/user/login`,
+        "/api/user/login",
         { email, password },
         config
       );
