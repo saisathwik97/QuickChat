@@ -24,6 +24,8 @@ const Signup = () => {
   const [Loding, setLoading] = useState(false);
   const toast=useToast();
   const history=useNavigate()
+  const BASE_URL = "https://quickchat-production-2f01.up.railway.app";
+
   const SubmitHandler=async()=>{
     setLoading(true);
     if(!name || !email || !password || !confirmPassword){
@@ -54,7 +56,7 @@ const Signup = () => {
           "Content-type":"application/json",
         },
       };  
-      const {data}=await axios.post("/api/user/register",{
+      const {data}=await axios.post(`${BASE_URL}/api/user/register`,{
         username:name,
         email,
         password,

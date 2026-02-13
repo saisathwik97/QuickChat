@@ -82,6 +82,8 @@ const Chat = () => {
 
   const fetchChatsRef = useRef();
   const currentUserIdRef = useRef(null);
+  const BASE_URL = "https://quickchat-production-2f01.up.railway.app";
+
 
   useEffect(() => {
     if (!user || !user._id) return;
@@ -129,7 +131,7 @@ const Chat = () => {
       const config = {
         headers: { Authorization: `Bearer ${user.token}` },
       };
-      const { data } = await axios.get("/api/chat", config);
+      const { data } = await axios.get(`${BASE_URL}/api/chat`, config);
       setChats(data);
     } catch (error) {
       toast({
@@ -162,7 +164,7 @@ const Chat = () => {
     try {
       setRenameLoading(true);
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
-      const { data } = await axios.put("/api/chat/rename", {
+      const { data } = await axios.put(`${BASE_URL}/api/chat/rename`, {
         chatId: selectedChat._id,
         chatName: groupChatName,
       }, config);
@@ -207,7 +209,7 @@ const Chat = () => {
         headers: { Authorization: `Bearer ${user.token}` },
       };
       const { data } = await axios.put(
-        "/api/chat/groupremove",
+        `${BASE_URL}/api/chat/groupremove`,
         {
           chatId: selectedChat._id,
           userId: userToRemove._id,
@@ -246,7 +248,7 @@ const Chat = () => {
         },
       };
 
-      await axios.delete("/api/chat/delete", {
+      await axios.delete(`${BASE_URL}/api/chat/delete`, {
         headers: { Authorization: `Bearer ${user.token}` },
         data: { chatId: selectedChat._id }, config
       });
@@ -288,7 +290,7 @@ const Chat = () => {
       setLoadingMessages(true);
 
       const { data } = await axios.get(
-        `/api/message/${selectedChat._id}`,
+        `${BASE_URL}/api/message/${selectedChat._id}`,
         config
       );
 
@@ -394,7 +396,7 @@ const Chat = () => {
         };
 
         const { data } = await axios.post(
-          "/api/message",
+          `${BASE_URL}/api/message`,
           {
             content: messageToSend,
             chatId: selectedChat._id,
@@ -456,7 +458,7 @@ const Chat = () => {
       const config = {
         headers: { Authorization: `Bearer ${user.token}` },
       };
-      const { data } = await axios.get(`/api/user?search=${query}`, config);
+      const { data } = await axios.get(`${BASE_URL}/api/user?search=${query}`, config);
       setSearchResult(data);
       setLoading(false);
     } catch (error) {
@@ -482,7 +484,7 @@ const Chat = () => {
         },
       };
 
-      const { data } = await axios.post("/api/chat", { userId }, config);
+      const { data } = await axios.post(`${BASE_URL}/api/chat`, { userId }, config);
 
       setChats((prevChats) => {
         if (!prevChats.find((c) => c._id === data._id)) {
@@ -554,7 +556,7 @@ const Chat = () => {
       return;
     }
     try {
-      const { data } = await axios.get(`/api/user?search=${query}`, {
+      const { data } = await axios.get(`${BASE_URL}/api/user?search=${query}`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       setGroupSearchResult(data);
@@ -588,7 +590,7 @@ const Chat = () => {
       };
 
       const { data } = await axios.post(
-        "/api/chat/group",
+        `${BASE_URL}/api/chat/group`,
         {
           name: groupName,
           users: JSON.stringify(selectedUsers.map((u) => u._id)),
