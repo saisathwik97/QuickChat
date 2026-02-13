@@ -33,29 +33,27 @@ mongoose.connect(MONGO_URI).then(() =>
     process.exit(1);
   });
 
-
-
 app.use("/api/user", routes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/message", messageRoutes);
-//deployment
-const rootDir = path.resolve(__dirname, "..");
-if (process.env.NODE_ENV === "production") {
- app.use(express.static(path.join(rootDir, "frontend", "build")));
-app.get(/.*/, (req, res) => {
-    res.sendFile(
-      path.join(rootDir, "frontend", "build", "index.html")
-    );
-  });
+// //deployment
+// const rootDir = path.resolve(__dirname, "..");
+// if (process.env.NODE_ENV === "production") {
+//  app.use(express.static(path.join(rootDir, "frontend", "build")));
+// app.get(/.*/, (req, res) => {
+//     res.sendFile(
+//       path.join(rootDir, "frontend", "build", "index.html")
+//     );
+//   });
 
-}
-else {
- app.get("/", (req, res) => {
-  res.send("QuickChat Backend Running");
-});
-}
+// }
+// else {
+//  app.get("/", (req, res) => {
+//   res.send("QuickChat Backend Running");
+// });
+// }
 
-//deployment
+// //deployment
 
 app.use(notFound);
 app.use(errorHandler);
@@ -63,11 +61,11 @@ app.use(errorHandler);
 const server = http.createServer(app);
 
 const io = new Server(server, {
-  pingTimeout: 60000,
   cors: {
-    origin: true,
-    credentials: true,
+    origin: "*", // change later
+    methods: ["GET", "POST"]
   },
+  pingTimeout: 60000
 });
 
 io.on("connection", (socket) => {
