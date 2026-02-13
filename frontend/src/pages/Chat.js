@@ -90,7 +90,9 @@ const Chat = () => {
 
     currentUserIdRef.current = user._id;
 
-    socket = io();
+    socket = io("https://quickchat-production-2f01.up.railway.app", {
+       withCredentials: true
+    });
     socket.emit("setup", user);
     socket.on("connected", () => {
       setSocketConnected(true);
