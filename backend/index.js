@@ -19,7 +19,7 @@ const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
 
 app.use(cors({ 
-  origin: true,
+  origin: ["https://quick-chat-omega-red.vercel.app/"],
   credentials: true 
 }));
 
@@ -65,7 +65,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "*", // change later
+    origin: ["https://quick-chat-omega-red.vercel.app/"],
     methods: ["GET", "POST"]
   },
   pingTimeout: 60000
