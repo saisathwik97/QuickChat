@@ -23,6 +23,9 @@ app.use(cors({
   credentials: true 
 }));
 
+app.get("/", (req, res) => {
+  res.send("QuickChat Backend Running 🚀");
+});
 
 app.use(express.json());
 
